@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/a-syreyschikov/ai-for-developers-project-387/compare/calendar-v0.3.0...calendar-v0.4.0) (2026-06-14)
+
+
+### Features
+
+* перенести проект календаря ([72a4cd2](https://github.com/a-syreyschikov/ai-for-developers-project-387/commit/72a4cd26ef782c2d93192ca48163b35552d6e261))
+
+
+### Bug Fixes
+
+* **frontend:** добавить сгенерированный API-клиент ([642845f](https://github.com/a-syreyschikov/ai-for-developers-project-387/commit/642845f20b728d37fd3cf3a2a204b5db0389fc03))
+
 ## [0.3.0](https://github.com/a-syreyschikov/ai-for-developers-project-386/compare/calendar-v0.2.0...calendar-v0.3.0) (2026-06-13)
 
 
