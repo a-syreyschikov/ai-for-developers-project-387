@@ -1,0 +1,835 @@
+openapi: 3.0.0
+info:
+  title: Calendar API
+  version: 0.1.0
+tags:
+  - name: Public
+  - name: Owner
+paths:
+  /api/owner:
+    get:
+      operationId: getOwner
+      summary: Get owner profile
+      description: Returns the single preconfigured owner. No authentication is required in the MVP.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Owner'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Owner
+  /api/owner/bookings/upcoming:
+    get:
+      operationId: listOwnerUpcomingBookings
+      summary: List upcoming owner bookings
+      description: Returns scheduled bookings with startsAt > server now, sorted by startsAt ascending.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingList'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Owner
+  /api/owner/bookings/{bookingId}/cancel:
+    post:
+      operationId: cancelOwnerBooking
+      summary: Cancel owner booking
+      description: Cancels a future scheduled booking. Repeated cancellation is idempotent and returns the cancelled booking.
+      parameters:
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ResourceId'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Owner
+  /api/owner/event-types:
+    get:
+      operationId: listOwnerEventTypes
+      summary: List owner event types
+      description: Returns event types sorted by title ascending.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventTypeList'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Owner
+    post:
+      operationId: createOwnerEventType
+      summary: Create owner event type
+      description: Creates an event type. Duplicate titles after trim and case-insensitive normalization return 409.
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventType'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Owner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEventTypeRequest'
+  /api/owner/schedule:
+    get:
+      operationId: getOwnerSchedule
+      summary: Get owner schedule
+      description: Returns the owner's weekly availability schedule in the owner's time zone.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Owner
+    put:
+      operationId: updateOwnerSchedule
+      summary: Update owner schedule
+      description: Replaces the owner's weekly availability schedule. Existing bookings remain unchanged.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Owner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateScheduleRequest'
+  /api/public/bookings:
+    post:
+      operationId: createPublicBooking
+      summary: Create guest booking
+      description: Creates a booking for a computed free slot. The server computes endsAt from the event type duration.
+      parameters: []
+      responses:
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '409':
+          description: The request conflicts with the current state of the server.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '422':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Public
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBookingRequest'
+      x-example:
+        request:
+          eventTypeId: 22222222-2222-2222-2222-222222222222
+          startsAt: '2026-06-15T07:00:00Z'
+          guestName: Guest User
+          guestEmail: guest@example.com
+  /api/public/event-types:
+    get:
+      operationId: listPublicEventTypes
+      summary: List public event types
+      description: Returns event types sorted by title ascending.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventTypeList'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Public
+      x-example:
+        response:
+          items:
+            - id: 22222222-2222-2222-2222-222222222222
+              title: Intro call
+              description: A short introductory call.
+              durationMinutes: 30
+  /api/public/event-types/{eventTypeId}:
+    get:
+      operationId: getPublicEventType
+      summary: Get public event type
+      parameters:
+        - name: eventTypeId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ResourceId'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventType'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Public
+  /api/public/event-types/{eventTypeId}/slots:
+    get:
+      operationId: listPublicEventTypeSlots
+      summary: List free slots for an event type
+      description: Returns free slots in the strict booking window now < startsAt < now + 14 days, sorted by startsAt ascending.
+      parameters:
+        - name: eventTypeId
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ResourceId'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlotList'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Public
+      x-example:
+        response:
+          items:
+            - eventTypeId: 22222222-2222-2222-2222-222222222222
+              startsAt: '2026-06-15T07:00:00Z'
+              endsAt: '2026-06-15T07:30:00Z'
+              durationMinutes: 30
+  /api/public/owner:
+    get:
+      operationId: getPublicOwner
+      summary: Get public owner profile
+      description: Returns the single preconfigured owner, including IANA time zone for display.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Owner'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+      tags:
+        - Public
+      x-example:
+        response:
+          id: 11111111-1111-1111-1111-111111111111
+          displayName: Alex Owner
+          timeZone: Europe/Moscow
+components:
+  schemas:
+    Booking:
+      type: object
+      required:
+        - id
+        - eventTypeId
+        - eventTypeTitle
+        - durationMinutes
+        - startsAt
+        - endsAt
+        - guestName
+        - guestEmail
+        - status
+        - createdAt
+      properties:
+        id:
+          allOf:
+            - $ref: '#/components/schemas/ResourceId'
+          description: Server-generated booking UUID.
+        eventTypeId:
+          allOf:
+            - $ref: '#/components/schemas/ResourceId'
+          description: Booked event type UUID.
+        eventTypeTitle:
+          type: string
+          minLength: 1
+          maxLength: 120
+          description: Event type title copied for booking list rendering.
+        durationMinutes:
+          type: integer
+          format: int32
+          minimum: 15
+          maximum: 240
+          multipleOf: 15
+          description: Booked event duration in minutes.
+        startsAt:
+          allOf:
+            - $ref: '#/components/schemas/UtcMinuteDateTime'
+          description: Inclusive booking start in UTC.
+        endsAt:
+          allOf:
+            - $ref: '#/components/schemas/UtcMinuteDateTime'
+          description: Exclusive booking end in UTC.
+        guestName:
+          type: string
+          minLength: 1
+          maxLength: 120
+          description: Guest name normalized with trim.
+        guestEmail:
+          type: string
+          minLength: 1
+          maxLength: 254
+          format: email
+          description: Guest email normalized with trim and lower-case.
+        status:
+          allOf:
+            - $ref: '#/components/schemas/BookingStatus'
+          description: Current booking status.
+        createdAt:
+          allOf:
+            - $ref: '#/components/schemas/UtcMinuteDateTime'
+          description: UTC timestamp when the booking was created.
+        cancelledAt:
+          allOf:
+            - $ref: '#/components/schemas/UtcMinuteDateTime'
+          description: UTC timestamp when the owner cancelled the booking. Present only for cancelled bookings.
+      description: Booking created by a guest for a computed free slot.
+      x-example:
+        id: 44444444-4444-4444-4444-444444444444
+        eventTypeId: 22222222-2222-2222-2222-222222222222
+        eventTypeTitle: Intro call
+        durationMinutes: 30
+        startsAt: '2026-06-15T07:00:00Z'
+        endsAt: '2026-06-15T07:30:00Z'
+        guestName: Guest User
+        guestEmail: guest@example.com
+        status: scheduled
+        createdAt: '2026-06-11T12:00:00Z'
+    BookingList:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Booking'
+    BookingStatus:
+      type: string
+      enum:
+        - scheduled
+        - cancelled
+      description: Booking lifecycle status. Cancelled bookings do not block slots.
+    CreateBookingRequest:
+      type: object
+      required:
+        - eventTypeId
+        - startsAt
+        - guestName
+        - guestEmail
+      properties:
+        eventTypeId:
+          $ref: '#/components/schemas/ResourceId'
+        startsAt:
+          allOf:
+            - $ref: '#/components/schemas/UtcMinuteDateTime'
+          description: Selected computed slot start in UTC.
+        guestName:
+          type: string
+          minLength: 1
+          maxLength: 120
+        guestEmail:
+          type: string
+          minLength: 1
+          maxLength: 254
+          format: email
+      description: Request to create a guest booking. The server computes endsAt from event type duration.
+      x-example:
+        eventTypeId: 22222222-2222-2222-2222-222222222222
+        startsAt: '2026-06-15T07:00:00Z'
+        guestName: Guest User
+        guestEmail: guest@example.com
+    CreateEventTypeRequest:
+      type: object
+      required:
+        - title
+        - description
+        - durationMinutes
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+        description:
+          type: string
+          minLength: 0
+          maxLength: 1000
+        durationMinutes:
+          type: integer
+          format: int32
+          minimum: 15
+          maximum: 240
+          multipleOf: 15
+      description: Request to create an event type. The server generates id.
+      x-example:
+        title: Intro call
+        description: A short introductory call.
+        durationMinutes: 30
+    ErrorCode:
+      type: string
+      enum:
+        - VALIDATION_FAILED
+        - EVENT_TYPE_NOT_FOUND
+        - BOOKING_NOT_FOUND
+        - DUPLICATE_EVENT_TYPE_TITLE
+        - INVALID_SCHEDULE
+        - SLOT_UNAVAILABLE
+        - SLOT_OUTSIDE_BOOKING_WINDOW
+        - BOOKING_NOT_CANCELLABLE
+        - INTERNAL_ERROR
+      description: Machine-readable domain error code.
+    EventType:
+      type: object
+      required:
+        - id
+        - title
+        - description
+        - durationMinutes
+      properties:
+        id:
+          allOf:
+            - $ref: '#/components/schemas/ResourceId'
+          description: Server-generated event type UUID.
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+          description: Event type title. Titles are unique after trim and case-insensitive normalization.
+        description:
+          type: string
+          minLength: 0
+          maxLength: 1000
+          description: Event type description. The field is always present and may be an empty string.
+        durationMinutes:
+          type: integer
+          format: int32
+          minimum: 15
+          maximum: 240
+          multipleOf: 15
+          description: Event duration in minutes. Must be between 15 and 240 and divisible by 15.
+      description: Type of meeting that a guest can book.
+      x-example:
+        id: 22222222-2222-2222-2222-222222222222
+        title: Intro call
+        description: A short introductory call.
+        durationMinutes: 30
+    EventTypeList:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventType'
+    LocalTime:
+      type: string
+      pattern: ^([01][0-9]|2[0-3]):(00|15|30|45)$
+      description: Local owner time in HH:mm format. Minutes must be 00, 15, 30, or 45.
+    Owner:
+      type: object
+      required:
+        - id
+        - displayName
+        - timeZone
+      properties:
+        id:
+          allOf:
+            - $ref: '#/components/schemas/ResourceId'
+          description: Server-generated owner UUID.
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 120
+          description: Owner display name.
+        timeZone:
+          type: string
+          minLength: 1
+          description: IANA time zone name used for display, for example Europe/Moscow.
+      description: Single preconfigured calendar owner used by owner and public APIs.
+      x-example:
+        id: 11111111-1111-1111-1111-111111111111
+        displayName: Alex Owner
+        timeZone: Europe/Moscow
+    ProblemDetails:
+      type: object
+      required:
+        - type
+        - title
+        - status
+        - code
+      properties:
+        type:
+          type: string
+          description: URI reference that identifies the problem type.
+        title:
+          type: string
+          description: Short human-readable problem title.
+        status:
+          type: integer
+          format: int32
+          description: HTTP status code.
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence.
+        code:
+          allOf:
+            - $ref: '#/components/schemas/ErrorCode'
+          description: Stable machine-readable error code.
+      description: RFC 7807 problem details with a domain-specific error code.
+      x-example:
+        type: https://calendar.local/problems/slot-unavailable
+        title: Slot is unavailable
+        status: 409
+        detail: The selected time overlaps an existing scheduled booking.
+        code: SLOT_UNAVAILABLE
+    ResourceId:
+      type: string
+      format: uuid
+      description: Server-generated UUID string.
+    Schedule:
+      type: object
+      required:
+        - days
+      properties:
+        days:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduleDay'
+          minItems: 7
+          maxItems: 7
+          description: Seven schedule days ordered from monday to sunday.
+      description: Owner weekly availability template in the owner's time zone.
+      x-example:
+        days:
+          - weekday: monday
+            enabled: true
+            startsAtLocalTime: '09:00'
+            endsAtLocalTime: '18:00'
+          - weekday: tuesday
+            enabled: true
+            startsAtLocalTime: '09:00'
+            endsAtLocalTime: '18:00'
+          - weekday: wednesday
+            enabled: true
+            startsAtLocalTime: '09:00'
+            endsAtLocalTime: '18:00'
+          - weekday: thursday
+            enabled: true
+            startsAtLocalTime: '09:00'
+            endsAtLocalTime: '18:00'
+          - weekday: friday
+            enabled: true
+            startsAtLocalTime: '09:00'
+            endsAtLocalTime: '18:00'
+          - weekday: saturday
+            enabled: false
+            startsAtLocalTime: null
+            endsAtLocalTime: null
+          - weekday: sunday
+            enabled: false
+            startsAtLocalTime: null
+            endsAtLocalTime: null
+    ScheduleDay:
+      type: object
+      required:
+        - weekday
+        - enabled
+        - startsAtLocalTime
+        - endsAtLocalTime
+      properties:
+        weekday:
+          allOf:
+            - $ref: '#/components/schemas/Weekday'
+          description: Weekday represented by this schedule day.
+        enabled:
+          type: boolean
+          description: Whether the owner is available on this weekday.
+        startsAtLocalTime:
+          type: string
+          nullable: true
+          pattern: ^([01][0-9]|2[0-3]):(00|15|30|45)$
+          description: Inclusive local start time. Required when enabled is true; null when enabled is false.
+        endsAtLocalTime:
+          type: string
+          nullable: true
+          pattern: ^([01][0-9]|2[0-3]):(00|15|30|45)$
+          description: Exclusive local end time. Required when enabled is true; null when enabled is false.
+      description: Owner availability for one weekday in the owner's time zone.
+      x-example:
+        weekday: monday
+        enabled: true
+        startsAtLocalTime: '09:00'
+        endsAtLocalTime: '18:00'
+    Slot:
+      type: object
+      required:
+        - eventTypeId
+        - startsAt
+        - endsAt
+        - durationMinutes
+      properties:
+        eventTypeId:
+          allOf:
+            - $ref: '#/components/schemas/ResourceId'
+          description: Event type UUID for which the slot was computed.
+        startsAt:
+          allOf:
+            - $ref: '#/components/schemas/UtcMinuteDateTime'
+          description: Inclusive slot start in UTC. Must satisfy now < startsAt < now + 14 days.
+        endsAt:
+          allOf:
+            - $ref: '#/components/schemas/UtcMinuteDateTime'
+          description: Exclusive slot end in UTC, computed from the event type duration.
+        durationMinutes:
+          type: integer
+          format: int32
+          minimum: 15
+          maximum: 240
+          multipleOf: 15
+          description: Event duration in minutes.
+      description: Computed free slot for a concrete event type. Slots are not persisted and have no id.
+      x-example:
+        eventTypeId: 22222222-2222-2222-2222-222222222222
+        startsAt: '2026-06-15T07:00:00Z'
+        endsAt: '2026-06-15T07:30:00Z'
+        durationMinutes: 30
+    SlotList:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Slot'
+    UpdateScheduleRequest:
+      type: object
+      required:
+        - days
+      properties:
+        days:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduleDay'
+          minItems: 7
+          maxItems: 7
+      description: Request to replace the owner's weekly schedule.
+      x-example:
+        days:
+          - weekday: monday
+            enabled: true
+            startsAtLocalTime: '09:00'
+            endsAtLocalTime: '18:00'
+          - weekday: tuesday
+            enabled: true
+            startsAtLocalTime: '09:00'
+            endsAtLocalTime: '18:00'
+          - weekday: wednesday
+            enabled: true
+            startsAtLocalTime: '09:00'
+            endsAtLocalTime: '18:00'
+          - weekday: thursday
+            enabled: true
+            startsAtLocalTime: '09:00'
+            endsAtLocalTime: '18:00'
+          - weekday: friday
+            enabled: true
+            startsAtLocalTime: '09:00'
+            endsAtLocalTime: '18:00'
+          - weekday: saturday
+            enabled: false
+            startsAtLocalTime: null
+            endsAtLocalTime: null
+          - weekday: sunday
+            enabled: false
+            startsAtLocalTime: null
+            endsAtLocalTime: null
+    UtcMinuteDateTime:
+      type: string
+      format: date-time
+      description: A UTC timestamp with Z suffix. The API accepts minute precision only; seconds and milliseconds must be zero.
+    Weekday:
+      type: string
+      enum:
+        - monday
+        - tuesday
+        - wednesday
+        - thursday
+        - friday
+        - saturday
+        - sunday
+      description: Weekday names used by the owner's weekly schedule.
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+    variables: {}

@@ -1,0 +1,56 @@
+:root {
+  --surface-page: var(--p-surface-50, #f8fafc);
+  --surface-panel: var(--p-surface-0, #ffffff);
+  --surface-panel-muted: var(--p-surface-100, #f1f5f9);
+  --surface-border: var(--p-content-border-color, #e2e8f0);
+  --text-strong: var(--p-surface-950, #020617);
+  --text-body: var(--p-surface-700, #334155);
+  --text-muted: var(--p-surface-500, #64748b);
+  --brand: var(--p-primary-color, #4f46e5);
+  --brand-soft: var(--p-highlight-background, #eef2ff);
+  --danger: var(--p-red-700, #b42318);
+  --success: var(--p-primary-color, #1c1917);
+  --radius-control: 8px;
+  --radius-panel: 12px;
+  --shadow-panel: 0 14px 34px rgba(15, 23, 42, 0.08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--text-body);
+  background:
+    radial-gradient(circle at top left, rgba(79, 70, 229, 0.12), transparent 32rem),
+    linear-gradient(180deg, #ffffff 0%, var(--surface-page) 38rem);
+  line-height: 1.6;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  font-size: 14px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}

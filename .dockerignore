@@ -1,0 +1,14 @@
+.git/
+node_modules/
+**/node_modules/
+coverage/
+generated/
+tsp-output/
+**/dist/
+.DS_Store
+*.log
+**/bin/
+**/obj/
+**/TestResults/
+**/playwright-report/
+**/test-results/

@@ -1,0 +1,10 @@
+node_modules/
+.env
+coverage/
+generated/
+tsp-output/
+.DS_Store
+*.log
+**/bin/
+**/obj/
+**/TestResults/
