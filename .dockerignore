@@ -2,7 +2,7 @@
 node_modules/
 **/node_modules/
 coverage/
-generated/
+/generated/
 tsp-output/
 **/dist/
 .DS_Store

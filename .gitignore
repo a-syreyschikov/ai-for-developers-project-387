@@ -1,7 +1,7 @@
 node_modules/
 .env
 coverage/
-generated/
+/generated/
 tsp-output/
 .DS_Store
 *.log
