@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/a-syreyschikov/ai-for-developers-project-387/compare/calendar-v0.4.1...calendar-v0.4.2) (2026-06-16)
+
+
+### Bug Fixes
+
+* **frontend:** dynamically update document title on route change ([763eb9c](https://github.com/a-syreyschikov/ai-for-developers-project-387/commit/763eb9ca9b4b0a64fcba5634319e0d5397c71749))
+
 ## [0.4.1](https://github.com/a-syreyschikov/ai-for-developers-project-387/compare/calendar-v0.4.0...calendar-v0.4.1) (2026-06-16)
 
 
