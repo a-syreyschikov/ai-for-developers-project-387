@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/a-syreyschikov/ai-for-developers-project-387/compare/calendar-v0.4.0...calendar-v0.4.1) (2026-06-16)
+
+
+### Bug Fixes
+
+* **ci:** use opencode API key secret ([98c08d4](https://github.com/a-syreyschikov/ai-for-developers-project-387/commit/98c08d44d3b7c08bbcccc712f857c3a0f26f5da8))
+
 ## [0.4.0](https://github.com/a-syreyschikov/ai-for-developers-project-387/compare/calendar-v0.3.0...calendar-v0.4.0) (2026-06-14)
 
 
