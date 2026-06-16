@@ -39,7 +39,7 @@ export const messages = {
       home: 'Главная',
       book: 'Записаться на встречу',
       bookingSuccess: 'Запись создана',
-      bookEventType: 'Выбор времени',
+      bookEventType: 'Выбор даты и времени',
       bookConfirm: 'Подтверждение записи',
       adminUpcoming: 'Предстоящие встречи — Админка',
       adminEvents: 'Типы событий — Админка',
