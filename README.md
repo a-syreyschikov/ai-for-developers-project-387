@@ -13,11 +13,10 @@
 
 ## Render MCP
 
-`opencode.json` ожидает Render MCP token в переменной окружения `RENDER_MCP_TOKEN`. Реальный `.env` не коммитится; шаблон доступен в `.env.example`.
+`opencode.json` ожидает Render MCP token в переменной окружения `RENDER_MCP_TOKEN`. Реальный `.env` не коммитится; шаблон доступен в `.env.example`. Запускайте opencode через npm-script, чтобы переменные из корневого `.env` попали в окружение MCP:
 
 ```bash
-export RENDER_MCP_TOKEN=your_render_mcp_token
-opencode
+npm run opencode
 ```
 
 ## Стек

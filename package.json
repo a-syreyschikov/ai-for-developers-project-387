@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "contract": "tsp compile contracts/api",
+    "opencode": "node scripts/opencode-with-env.mjs",
     "test": "npm run contract && c8 --include=tests/contract.test.mjs --exclude=\"\" --check-coverage --statements 80 node --test tests/contract.test.mjs",
     "test:coverage": "npm run contract && c8 --include=tests/contract.test.mjs --exclude=\"\" --reporter=text --reporter=html --check-coverage --statements 80 node --test tests/contract.test.mjs"
   },
