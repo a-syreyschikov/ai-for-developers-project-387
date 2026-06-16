@@ -11,6 +11,7 @@
     "mock:api": "prism mock ../../contracts/openapi.yaml --port 4010",
     "test:unit": "vitest",
     "test:e2e": "playwright test; status=$?; cd ../.. && docker compose down --volumes --remove-orphans; exit $status",
+    "lighthouse:ci": "lhci collect --config=./lighthouserc.cjs && lhci upload --config=./lighthouserc.cjs",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "run-s lint:*",
@@ -33,6 +34,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.60.0",
     "@stoplight/prism-cli": "^5.15.11",
     "@tsconfig/node24": "^24.0.4",

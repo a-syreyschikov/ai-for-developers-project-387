@@ -1,0 +1,70 @@
+name: lighthouse
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    name: Lighthouse report
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: apps/frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: apps/frontend
+        run: npm ci
+
+      - name: Build production image
+        run: docker build -t calendar-lighthouse .
+
+      - name: Start production app
+        run: docker run --rm --detach --name calendar-lighthouse --env PORT=8080 --publish 8080:8080 calendar-lighthouse
+
+      - name: Wait for app
+        run: |
+          for attempt in {1..60}; do
+            if curl --silent --fail http://127.0.0.1:8080/ > /dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs calendar-lighthouse
+          exit 1
+
+      - name: Run Lighthouse CI
+        working-directory: apps/frontend
+        run: npm run lighthouse:ci
+
+      - name: Generate Lighthouse findings
+        if: always()
+        run: node scripts/lighthouse-summary.mjs lighthouse-report lighthouse-findings.md
+
+      - name: Upload Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: lighthouse-report
+          path: |
+            lighthouse-report/
+            lighthouse-findings.md
+          if-no-files-found: ignore
+
+      - name: Stop production app
+        if: always()
+        run: docker stop calendar-lighthouse || true

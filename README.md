@@ -72,6 +72,34 @@ make test-e2e
 
 Сценарии описаны в `docs/e2e-scenarios.md`. Первый обязательный сценарий проходит путь Guest от выбора EventType и Slot до создания Booking и проверяет, что Owner видит Booking в `/admin/upcoming`.
 
+## Регулярный Lighthouse-отчет
+
+Workflow `lighthouse` запускает Lighthouse CI по расписанию каждый понедельник в 03:00 по Москве и вручную через GitHub Actions `workflow_dispatch`.
+
+Проверяются страницы production-сборки, поднятой внутри CI:
+
+- `/`;
+- `/book`;
+- `/admin/upcoming`.
+
+После запуска команда смотрит GitHub Actions summary и artifact `lighthouse-report`. В artifact сохраняются HTML/JSON отчеты Lighthouse и `lighthouse-findings.md` со сводкой score и кандидатами на правки.
+
+Локальный запуск возможен против поднятого production-контейнера:
+
+```bash
+make docker-build
+PORT=8080 make docker-run
+```
+
+В другом терминале:
+
+```bash
+cd apps/frontend
+npm run lighthouse:ci
+cd ../..
+node scripts/lighthouse-summary.mjs lighthouse-report lighthouse-findings.md
+```
+
 ## Запуск приложения
 
 Production-сценарий собирает один Docker-образ: backend запускает API, отдает собранный frontend и слушает порт из переменной окружения `PORT`.

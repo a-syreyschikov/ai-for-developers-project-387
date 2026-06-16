@@ -1,8 +1,11 @@
 node_modules/
 .env
 coverage/
+/lighthouse-report/
+/lighthouse-findings.md
 /generated/
 tsp-output/
+.lighthouseci/
 .DS_Store
 *.log
 **/bin/
