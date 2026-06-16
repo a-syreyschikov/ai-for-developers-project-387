@@ -35,6 +35,16 @@ export const messages = {
       BOOKING_NOT_CANCELLABLE: 'Эту встречу уже нельзя отменить.',
       INTERNAL_ERROR: 'На сервере произошла ошибка. Попробуйте позже.',
     },
+    pages: {
+      home: 'Главная',
+      book: 'Записаться на встречу',
+      bookingSuccess: 'Запись создана',
+      bookEventType: 'Выбор даты и времени',
+      bookConfirm: 'Подтверждение записи',
+      adminUpcoming: 'Предстоящие встречи — Админка',
+      adminEvents: 'Типы событий — Админка',
+      adminSchedule: 'Расписание — Админка',
+    },
   },
 } as const
 
